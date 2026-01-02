@@ -40,7 +40,6 @@
       position: relative;
     }
 
-    /* 星空/流星 Canvas 在最底层 */
     #fx{
       position: fixed;
       inset: 0;
@@ -48,10 +47,9 @@
       height: 100%;
       z-index: 0;
       pointer-events: none;
-      opacity: .85;
+      opacity: .92;
     }
 
-    /* subtle film grain */
     body::before{
       content:"";
       position:fixed; inset:0;
@@ -70,7 +68,7 @@
       justify-content:center;
       padding:28px 16px;
       position: relative;
-      z-index: 2; /* 盖在特效上 */
+      z-index: 2;
     }
 
     .shell{
@@ -103,10 +101,9 @@
       z-index:1;
     }
 
-    /* 左上角头像：改为源 icon.png */
     .appIcon{
-      width:46px; height:46px;
-      border-radius:16px;
+      width:128px; height:128px;
+      border-radius: 28px;
       background: rgba(255,255,255,.10);
       border:1px solid rgba(255,255,255,.22);
       box-shadow: var(--shadow2);
@@ -121,11 +118,10 @@
       display:block;
       transform: translateZ(0);
     }
-    /* 轻微高光 */
     .appIcon::after{
       content:"";
       position:absolute; inset:0;
-      background: radial-gradient(50px 36px at 28% 18%, rgba(255,255,255,.22), transparent 60%);
+      background: radial-gradient(90px 70px at 28% 18%, rgba(255,255,255,.22), transparent 62%);
       pointer-events:none;
     }
 
@@ -155,6 +151,7 @@
     @media (max-width:820px){
       header{padding:22px 18px 12px}
       .content{grid-template-columns:1fr; padding:0 18px 18px}
+      .appIcon{width:96px;height:96px;border-radius:22px}
     }
 
     .panel{
@@ -281,9 +278,32 @@
       gap:10px;
       color: rgba(255,255,255,.55);
       font-size:12px;
+      align-items:center;
     }
     @media (max-width:820px){
-      footer{padding:14px 18px 18px; flex-direction:column}
+      footer{padding:14px 18px 18px; flex-direction:column; align-items:flex-start}
+    }
+
+    .timePill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 10px;
+      border-radius: 14px;
+      background: rgba(0,0,0,.20);
+      border:1px solid rgba(255,255,255,.14);
+      color: rgba(255,255,255,.75);
+      font-size:12px;
+      white-space: nowrap;
+    }
+    .timeDot{
+      width:8px;height:8px;border-radius:999px;
+      background: rgba(120,255,210,.45);
+      box-shadow: 0 0 0 3px rgba(120,255,210,.10);
+    }
+    .timeMono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      color: rgba(255,255,255,.85);
     }
 
     .toast{
@@ -331,7 +351,7 @@
       left: 50%;
       top: 50%;
       transform: translate(-50%,-50%) scale(.98);
-      width: min(420px, calc(100% - 26px));
+      width: min(440px, calc(100% - 26px));
       border-radius: 22px;
       background: rgba(255,255,255,.10);
       border: 1px solid rgba(255,255,255,.22);
@@ -357,8 +377,8 @@
       border-bottom: 1px solid rgba(255,255,255,.10);
     }
     .modalHead .dot{
-      background: rgba(120,255,210,.35);
-      box-shadow: 0 0 0 3px rgba(120,255,210,.10);
+      background: rgba(84,214,255,.45);
+      box-shadow: 0 0 0 3px rgba(84,214,255,.10);
     }
     .modalTitle{
       margin:0;
@@ -366,19 +386,30 @@
       letter-spacing:.2px;
     }
     .modalBody{
-      padding: 14px 16px 16px;
+      padding: 14px 16px 10px;
       color: rgba(255,255,255,.82);
       font-size: 13px;
       line-height: 1.6;
+    }
+    .modalBody .repoMono{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:16px;
+      background: rgba(0,0,0,.22);
+      border:1px solid rgba(255,255,255,.14);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      font-size: 13px;
+      color: rgba(255,255,255,.90);
+      word-break: break-all;
     }
     .modalActions{
       padding: 12px 16px 16px;
       display:flex;
       gap:10px;
       justify-content:flex-end;
+      flex-wrap:wrap;
     }
 
-    /* 减少动态效果时：不渲染流星 */
     @media (prefers-reduced-motion: reduce){
       #fx{ display:none; }
     }
@@ -386,7 +417,6 @@
 </head>
 
 <body>
-  <!-- 星空/流星特效 -->
   <canvas id="fx" aria-hidden="true"></canvas>
 
   <div class="wrap">
@@ -422,8 +452,8 @@
           </p>
 
           <div class="chips">
-            <div class="chip"><span class="dot"></span>后续你会加入：<b>debs/</b>、<b>Packages</b>、<b>Release</b></div>
-            <div class="chip"><span class="dot"></span>页面只是首页，美观用；真正可用源取决于 Packages/Release</div>
+            <div class="chip"><span class="dot"></span>仓库结构：<b>debs/</b>、<b>Packages</b>、<b>Release</b>、<b>icon.png</b></div>
+            <div class="chip"><span class="dot"></span>首页用于展示，真正可用源取决于 Packages/Release</div>
           </div>
         </div>
 
@@ -448,7 +478,7 @@
 
       <footer>
         <span>© <span id="year"></span> OVO-2001</span>
-        <span>Frosted Glass UI · GitHub Pages</span>
+        <span class="timePill"><span class="timeDot"></span><span>北京时间</span><span class="timeMono" id="bjTime">--:--:--</span></span>
       </footer>
     </main>
   </div>
@@ -459,22 +489,25 @@
   <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modalHead">
       <span class="dot" aria-hidden="true"></span>
-      <h3 class="modalTitle" id="modalTitle">提示</h3>
+      <h3 class="modalTitle" id="modalTitle">源说明</h3>
     </div>
     <div class="modalBody">
-      这个弹窗和提示条都是网页自定义的"磨砂玻璃"效果，不是系统 alert，所以样式可以完全控制。<br><br>
-      下一步如果你要把源变成"真正可安装"，需要上传 deb 并生成 Packages / Packages.gz / Release。
+      这是 OVO-2001 的 Sileo 软件源首页。你可以复制下方地址，在 Sileo → Sources → Add 添加。<br><br>
+      如果你刷新时看到“架构提示”，通常是 Release/Packages 的 Architectures 与包架构不匹配或暂时没有可用包。
+      <div class="repoMono" id="modalRepoUrl">https://ovo-2001.github.io/sileo/</div>
     </div>
     <div class="modalActions">
+      <button class="btn primary" id="modalCopyBtn" type="button">复制源地址</button>
       <button class="btn" id="closeModalBtn" type="button">关闭</button>
     </div>
   </div>
 
   <script>
-    // year
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    const repoUrl = document.getElementById("repoUrl").textContent.trim();
+    const repoUrlEl = document.getElementById("repoUrl");
+    const repoUrl = repoUrlEl.textContent.trim();
+
     const copyBtn = document.getElementById("copyBtn");
     const toast = document.getElementById("toast");
 
@@ -482,6 +515,10 @@
     const modal = document.getElementById("modal");
     const showModalBtn = document.getElementById("showModalBtn");
     const closeModalBtn = document.getElementById("closeModalBtn");
+    const modalRepoUrl = document.getElementById("modalRepoUrl");
+    const modalCopyBtn = document.getElementById("modalCopyBtn");
+
+    modalRepoUrl.textContent = repoUrl;
 
     function showToast(text){
       toast.textContent = text;
@@ -509,6 +546,11 @@
       showToast("源地址已复制！");
     });
 
+    modalCopyBtn.addEventListener("click", async () => {
+      await copyText(repoUrl);
+      showToast("已复制到剪贴板！");
+    });
+
     function openModal(){
       mask.classList.add("show");
       modal.classList.add("show");
@@ -523,12 +565,21 @@
     mask.addEventListener("click", closeModal);
     document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeModal(); });
 
-    /* =========================
-       流星雨/星空特效（Canvas）
-       - 性能友好
-       - 自动适配 DPR
-       - iOS Safari OK
-    ========================== */
+    function two(n){ return String(n).padStart(2,"0"); }
+    function updateBJ(){
+      const now = new Date();
+      const fmt = new Intl.DateTimeFormat("zh-CN", {
+        timeZone: "Asia/Shanghai",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false
+      });
+      document.getElementById("bjTime").textContent = fmt.format(now).replace(/\u200E/g,"");
+    }
+    updateBJ();
+    setInterval(updateBJ, 1000);
+
     const canvas = document.getElementById("fx");
     const ctx = canvas.getContext("2d", { alpha: true });
 
@@ -542,69 +593,73 @@
       canvas.style.width = W + "px";
       canvas.style.height = H + "px";
       ctx.setTransform(DPR,0,0,DPR,0,0);
+      initStars();
     }
     window.addEventListener("resize", resize, { passive:true });
-    resize();
 
-    // 星星
     const stars = [];
     function initStars(){
       stars.length = 0;
-      const count = Math.floor(Math.min(220, Math.max(90, (W*H)/12000)));
+      const count = Math.floor(Math.min(260, Math.max(110, (W*H)/10500)));
       for(let i=0;i<count;i++){
         stars.push({
           x: Math.random()*W,
           y: Math.random()*H,
-          r: Math.random()*1.6 + 0.2,
+          r: Math.random()*1.7 + 0.2,
           a: Math.random()*0.55 + 0.15,
-          tw: Math.random()*0.015 + 0.006
+          tw: Math.random()*0.018 + 0.007
         });
       }
     }
-    initStars();
 
-    // 流星
     const meteors = [];
     function spawnMeteor(){
-      // 从上方/左上方进入
-      const fromTop = Math.random() < 0.55;
-      const x = fromTop ? Math.random()*W : -80;
-      const y = fromTop ? -50 : Math.random()*H*0.55;
-      const len = Math.random()*220 + 140;
-      const spd = Math.random()*12 + 10;
-      const ang = Math.random()*0.22 + 0.72; // 约 41°~54°
+      const fromTop = Math.random() < 0.62;
+      const x = fromTop ? Math.random()*W : -120;
+      const y = fromTop ? -70 : Math.random()*H*0.58;
+      const len = Math.random()*260 + 170;
+      const spd = Math.random()*14 + 12;
+      const ang = Math.random()*0.20 + 0.70;
       meteors.push({
         x, y,
         vx: Math.cos(ang)*spd,
         vy: Math.sin(ang)*spd,
         len,
         life: 0,
-        max: Math.random()*40 + 34,
-        w: Math.random()*1.2 + 0.7
+        max: Math.random()*44 + 36,
+        w: Math.random()*1.25 + 0.85
       });
-      // 控制数量
-      if(meteors.length > 8) meteors.shift();
+      if(meteors.length > 14) meteors.shift();
     }
 
-    // 生成节奏：偶尔来一颗
     let meteorTimer = 0;
     function tickMeteor(dt){
       meteorTimer += dt;
-      const interval = 900 + Math.random()*900; // 0.9s~1.8s
+      const interval = 520 + Math.random()*620;
       if(meteorTimer > interval){
         meteorTimer = 0;
-        if(document.visibilityState === "visible") spawnMeteor();
+        if(document.visibilityState === "visible"){
+          const burst = Math.random() < 0.22 ? 2 : 1;
+          for(let i=0;i<burst;i++) spawnMeteor();
+        }
       }
     }
 
-    // 背景淡淡光晕（跟你原背景相配）
     function drawGlow(){
-      const g = ctx.createRadialGradient(W*0.2, H*0.15, 0, W*0.2, H*0.15, Math.min(W,H)*0.65);
-      g.addColorStop(0, "rgba(84,214,255,0.10)");
-      g.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = g;
+      const g1 = ctx.createRadialGradient(W*0.2, H*0.15, 0, W*0.2, H*0.15, Math.min(W,H)*0.65);
+      g1.addColorStop(0, "rgba(84,214,255,0.11)");
+      g1.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = g1;
+      ctx.fillRect(0,0,W,H);
+
+      const g2 = ctx.createRadialGradient(W*0.85, H*0.22, 0, W*0.85, H*0.22, Math.min(W,H)*0.55);
+      g2.addColorStop(0, "rgba(255,120,210,0.08)");
+      g2.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = g2;
       ctx.fillRect(0,0,W,H);
     }
+
+    resize();
 
     let last = performance.now();
     function loop(now){
@@ -614,10 +669,9 @@
       ctx.clearRect(0,0,W,H);
       drawGlow();
 
-      // 星星闪烁
       for(const s of stars){
         s.a += (Math.random()-0.5)*s.tw;
-        s.a = Math.max(0.08, Math.min(0.75, s.a));
+        s.a = Math.max(0.08, Math.min(0.78, s.a));
         ctx.globalAlpha = s.a;
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
@@ -628,21 +682,20 @@
 
       tickMeteor(dt);
 
-      // 流星绘制
       for(let i=meteors.length-1;i>=0;i--){
         const m = meteors[i];
         m.life += 1;
         m.x += m.vx;
         m.y += m.vy;
 
-        const t = m.life / m.max; // 0~1
-        const alpha = (t < 0.2) ? (t/0.2) : (t > 0.85 ? (1 - (t-0.85)/0.15) : 1);
+        const t = m.life / m.max;
+        const alpha = (t < 0.18) ? (t/0.18) : (t > 0.86 ? (1 - (t-0.86)/0.14) : 1);
         const tailX = m.x - m.vx * (m.len/18);
         const tailY = m.y - m.vy * (m.len/18);
 
         const grad = ctx.createLinearGradient(m.x, m.y, tailX, tailY);
         grad.addColorStop(0, `rgba(255,255,255,${0.95*alpha})`);
-        grad.addColorStop(0.35, `rgba(120,255,210,${0.28*alpha})`);
+        grad.addColorStop(0.35, `rgba(120,255,210,${0.30*alpha})`);
         grad.addColorStop(1, `rgba(255,120,210,0)`);
 
         ctx.strokeStyle = grad;
@@ -653,8 +706,7 @@
         ctx.lineTo(tailX, tailY);
         ctx.stroke();
 
-        // 超出屏幕或寿命结束
-        if(m.life > m.max || m.x > W+220 || m.y > H+220){
+        if(m.life > m.max || m.x > W+260 || m.y > H+260){
           meteors.splice(i,1);
         }
       }
@@ -662,7 +714,6 @@
       requestAnimationFrame(loop);
     }
 
-    // 页面不可见时降低消耗
     document.addEventListener("visibilitychange", ()=>{
       if(document.visibilityState !== "visible"){
         meteors.length = 0;
