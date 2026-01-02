@@ -9,7 +9,6 @@
 
   <style>
     :root{
-      /* iOS-like frosted glass palette */
       --bg0:#070b14;
       --bg1:#081a2a;
       --gl: rgba(255,255,255,.10);
@@ -27,6 +26,7 @@
 
     *{box-sizing:border-box}
     html,body{height:100%}
+
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "PingFang SC","Microsoft YaHei", sans-serif;
@@ -37,9 +37,21 @@
         radial-gradient(980px 880px at 50% 88%, rgba(120, 255, 210,.16), transparent 60%),
         linear-gradient(145deg, var(--bg0), var(--bg1));
       overflow-x:hidden;
+      position: relative;
     }
 
-    /* subtle film grain (frosty texture) */
+    /* 星空/流星 Canvas 在最底层 */
+    #fx{
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      opacity: .85;
+    }
+
+    /* subtle film grain */
     body::before{
       content:"";
       position:fixed; inset:0;
@@ -48,6 +60,7 @@
       opacity:.20;
       pointer-events:none;
       mix-blend-mode: overlay;
+      z-index: 1;
     }
 
     .wrap{
@@ -56,6 +69,8 @@
       align-items:center;
       justify-content:center;
       padding:28px 16px;
+      position: relative;
+      z-index: 2; /* 盖在特效上 */
     }
 
     .shell{
@@ -88,15 +103,30 @@
       z-index:1;
     }
 
+    /* 左上角头像：改为源 icon.png */
     .appIcon{
       width:46px; height:46px;
       border-radius:16px;
       background: rgba(255,255,255,.10);
       border:1px solid rgba(255,255,255,.22);
       box-shadow: var(--shadow2);
-      display:grid;
-      place-items:center;
+      overflow:hidden;
       flex:0 0 auto;
+      position: relative;
+    }
+    .appIcon img{
+      width:100%;
+      height:100%;
+      object-fit: cover;
+      display:block;
+      transform: translateZ(0);
+    }
+    /* 轻微高光 */
+    .appIcon::after{
+      content:"";
+      position:absolute; inset:0;
+      background: radial-gradient(50px 36px at 28% 18%, rgba(255,255,255,.22), transparent 60%);
+      pointer-events:none;
     }
 
     .title{
@@ -256,7 +286,6 @@
       footer{padding:14px 18px 18px; flex-direction:column}
     }
 
-    /* Frosted Toast (custom, not system alert) */
     .toast{
       position: fixed;
       left: 50%;
@@ -282,7 +311,6 @@
       transform: translateX(-50%) translateY(0px);
     }
 
-    /* Frosted modal (optional "弹窗") */
     .modalMask{
       position: fixed;
       inset: 0;
@@ -349,19 +377,23 @@
       gap:10px;
       justify-content:flex-end;
     }
+
+    /* 减少动态效果时：不渲染流星 */
+    @media (prefers-reduced-motion: reduce){
+      #fx{ display:none; }
+    }
   </style>
 </head>
 
 <body>
+  <!-- 星空/流星特效 -->
+  <canvas id="fx" aria-hidden="true"></canvas>
+
   <div class="wrap">
     <main class="shell" role="main" aria-label="Sileo Repo">
       <header>
         <div class="appIcon" aria-hidden="true">
-          <!-- minimalist icon -->
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-            <path d="M12 2c2.9 0 5.3 2.4 5.3 5.3 0 1.5-.7 2.9-1.8 3.8-.6.5-.9 1.2-.9 2v.3c0 .7.6 1.3 1.3 1.3h.8c1.8 0 3.3 1.5 3.3 3.3V22H4v-2.2c0-1.8 1.5-3.3 3.3-3.3h.8c.7 0 1.3-.6 1.3-1.3V15c0-.8-.3-1.5-.9-2A5.2 5.2 0 0 1 6.7 7.3C6.7 4.4 9.1 2 12 2Z" stroke="rgba(255,255,255,.88)" stroke-width="1.5"/>
-            <path d="M9.2 8.8h5.6" stroke="rgba(255,255,255,.75)" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
+          <img src="icon.png" alt="Repo Icon" loading="eager" />
         </div>
 
         <div>
@@ -371,7 +403,6 @@
       </header>
 
       <section class="content">
-        <!-- Left -->
         <div class="panel">
           <h2>源地址</h2>
 
@@ -396,7 +427,6 @@
           </div>
         </div>
 
-        <!-- Right -->
         <aside class="panel">
           <h2>添加教程</h2>
           <ol class="steps">
@@ -423,10 +453,8 @@
     </main>
   </div>
 
-  <!-- Frosted Toast -->
   <div id="toast" class="toast" role="status" aria-live="polite">已复制</div>
 
-  <!-- Frosted Modal (弹窗) -->
   <div id="mask" class="modalMask" aria-hidden="true"></div>
   <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modalHead">
@@ -466,7 +494,6 @@
         await navigator.clipboard.writeText(text);
         return true;
       }catch(e){
-        // fallback for older iOS / permission issues
         const ta = document.createElement("textarea");
         ta.value = text;
         document.body.appendChild(ta);
@@ -495,6 +522,154 @@
     closeModalBtn.addEventListener("click", closeModal);
     mask.addEventListener("click", closeModal);
     document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeModal(); });
+
+    /* =========================
+       流星雨/星空特效（Canvas）
+       - 性能友好
+       - 自动适配 DPR
+       - iOS Safari OK
+    ========================== */
+    const canvas = document.getElementById("fx");
+    const ctx = canvas.getContext("2d", { alpha: true });
+
+    let W=0, H=0, DPR=1;
+    function resize(){
+      DPR = Math.min(2, window.devicePixelRatio || 1);
+      W = Math.floor(window.innerWidth);
+      H = Math.floor(window.innerHeight);
+      canvas.width = Math.floor(W * DPR);
+      canvas.height = Math.floor(H * DPR);
+      canvas.style.width = W + "px";
+      canvas.style.height = H + "px";
+      ctx.setTransform(DPR,0,0,DPR,0,0);
+    }
+    window.addEventListener("resize", resize, { passive:true });
+    resize();
+
+    // 星星
+    const stars = [];
+    function initStars(){
+      stars.length = 0;
+      const count = Math.floor(Math.min(220, Math.max(90, (W*H)/12000)));
+      for(let i=0;i<count;i++){
+        stars.push({
+          x: Math.random()*W,
+          y: Math.random()*H,
+          r: Math.random()*1.6 + 0.2,
+          a: Math.random()*0.55 + 0.15,
+          tw: Math.random()*0.015 + 0.006
+        });
+      }
+    }
+    initStars();
+
+    // 流星
+    const meteors = [];
+    function spawnMeteor(){
+      // 从上方/左上方进入
+      const fromTop = Math.random() < 0.55;
+      const x = fromTop ? Math.random()*W : -80;
+      const y = fromTop ? -50 : Math.random()*H*0.55;
+      const len = Math.random()*220 + 140;
+      const spd = Math.random()*12 + 10;
+      const ang = Math.random()*0.22 + 0.72; // 约 41°~54°
+      meteors.push({
+        x, y,
+        vx: Math.cos(ang)*spd,
+        vy: Math.sin(ang)*spd,
+        len,
+        life: 0,
+        max: Math.random()*40 + 34,
+        w: Math.random()*1.2 + 0.7
+      });
+      // 控制数量
+      if(meteors.length > 8) meteors.shift();
+    }
+
+    // 生成节奏：偶尔来一颗
+    let meteorTimer = 0;
+    function tickMeteor(dt){
+      meteorTimer += dt;
+      const interval = 900 + Math.random()*900; // 0.9s~1.8s
+      if(meteorTimer > interval){
+        meteorTimer = 0;
+        if(document.visibilityState === "visible") spawnMeteor();
+      }
+    }
+
+    // 背景淡淡光晕（跟你原背景相配）
+    function drawGlow(){
+      const g = ctx.createRadialGradient(W*0.2, H*0.15, 0, W*0.2, H*0.15, Math.min(W,H)*0.65);
+      g.addColorStop(0, "rgba(84,214,255,0.10)");
+      g.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = g;
+      ctx.fillRect(0,0,W,H);
+    }
+
+    let last = performance.now();
+    function loop(now){
+      const dt = Math.min(50, now - last);
+      last = now;
+
+      ctx.clearRect(0,0,W,H);
+      drawGlow();
+
+      // 星星闪烁
+      for(const s of stars){
+        s.a += (Math.random()-0.5)*s.tw;
+        s.a = Math.max(0.08, Math.min(0.75, s.a));
+        ctx.globalAlpha = s.a;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+        ctx.fillStyle = "rgba(255,255,255,1)";
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+
+      tickMeteor(dt);
+
+      // 流星绘制
+      for(let i=meteors.length-1;i>=0;i--){
+        const m = meteors[i];
+        m.life += 1;
+        m.x += m.vx;
+        m.y += m.vy;
+
+        const t = m.life / m.max; // 0~1
+        const alpha = (t < 0.2) ? (t/0.2) : (t > 0.85 ? (1 - (t-0.85)/0.15) : 1);
+        const tailX = m.x - m.vx * (m.len/18);
+        const tailY = m.y - m.vy * (m.len/18);
+
+        const grad = ctx.createLinearGradient(m.x, m.y, tailX, tailY);
+        grad.addColorStop(0, `rgba(255,255,255,${0.95*alpha})`);
+        grad.addColorStop(0.35, `rgba(120,255,210,${0.28*alpha})`);
+        grad.addColorStop(1, `rgba(255,120,210,0)`);
+
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = m.w;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(m.x, m.y);
+        ctx.lineTo(tailX, tailY);
+        ctx.stroke();
+
+        // 超出屏幕或寿命结束
+        if(m.life > m.max || m.x > W+220 || m.y > H+220){
+          meteors.splice(i,1);
+        }
+      }
+
+      requestAnimationFrame(loop);
+    }
+
+    // 页面不可见时降低消耗
+    document.addEventListener("visibilitychange", ()=>{
+      if(document.visibilityState !== "visible"){
+        meteors.length = 0;
+      }
+    });
+
+    requestAnimationFrame(loop);
   </script>
 </body>
 </html>
