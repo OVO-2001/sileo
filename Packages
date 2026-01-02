@@ -1,21 +1,35 @@
-Package: com.ps.githubweblegacycompat
-Version: 2.3.25~roothide
+Package: com.HBWechatHelper.ailun
+Version: 2.0.1
 Architecture: iphoneos-arm64e
-Maintainer: PoomSmart
-Installed-Size: 2236
-Pre-Depends: patches-com.ps.githubweblegacycompat(= 2.3.25~roothide)
-Depends: mobilesubstrate (>= 0.9.5000), firmware (>= 8.0), firmware (<< 16.4), com.ps.polyfills (>= 2.12.3)
-Filename: debs/com.ps.githubweblegacycompat_2.3.25_iphoneos-arm64e-2.deb
-Size: 990462
-MD5sum: bbb5ae7b0953fcd3d9337368a956ddab
-SHA1: fd1a3b21765573c17a41164cb9d3786e464e4920
-SHA256: 66bbcc038fe07415e24cc6106e40ce68ff37af8cd711177830d4a3247eed4459
+Maintainer: HuangBai <QQ:1343309363@qq.com>
+Pre-Depends: rootless-compat(>= 0.9)
+Depends: mobilesubstrate
+Filename: debs/黄白助手2.0-1_无根-2.deb
+Size: 36240312
+MD5sum: ebd4f3f6e8f4a53eda59261a9b3d56b4
+SHA1: 6852882fc4aa6e473203960346a0023b04077752
+SHA256: 3b78f976a1caf8123158f71f69f2517fc6d07f3ea965d01d185800b6c8fc2467
+Section: Mao
+Description: 黄白助手-微信插件，点歌朋友圈一键点赞，禁用控件，设置布局大小，私聊发抢自己的红包，文本转语音，文案语录，群聊管理，朋友圈保存实况 Live 图，消息防撤回，艾特所有人，朋友圈自定义选取位置，消息双击复读，修改气泡，修改按钮图标，修改显示微信号，自动呼出键盘，微信运动一键点赞，头像转发好友，强制下载 dylib 文件，设置全局圆头像，百变消息小尾巴，朋友圈小尾巴，等诸多功能
+Author: HuangBai <QQ:1343309363@qq.com>
+Name: 黄白助手(微信插件)-Rootless
+
+Package: com.binglan.kzmh
+Version: 1.0.5
+Architecture: iphoneos-arm64e
+Maintainer: binglan
+Installed-Size: 356
+Pre-Depends: rootless-compat(>= 0.9)
+Depends: mobilesubstrate, firmware (>= 15.0)
+Filename: debs/com.binglan.kzmh_1.0.5_iphoneos-arm64e-1.deb
+Size: 27288
+MD5sum: 7fe695cd8eebf10ba90ec164ce9ace3a
+SHA1: 4e01b45236b0373c8d2eb7d42ce492cc1dc9211d
+SHA256: 984c585f6926b55978d72453ad95bfc37d0c0455f5e65085e60228c926e09e95
 Section: Tweaks
-Description: Makes GitHub website more accessible on iOS < 16.4
-Author: PoomSmart
-Depiction: https://poomsmart.github.io/repo/depictions/githubweblegacycompat.html
-Name: GitHubWebLegacyCompat
-Sileodepiction: https://poomsmart.github.io/repo/sileodepictions/githubweblegacycompat.json
+Description: 神秘功能。
+Author: binglan
+Name: 控制中心美化
 
 Package: com.sini921.simpleswitch
 Version: 0.0.1-8
