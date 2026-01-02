@@ -1,0 +1,38 @@
+Package: com.ps.githubweblegacycompat
+Version: 2.3.25~roothide
+Architecture: iphoneos-arm64e
+Maintainer: PoomSmart
+Installed-Size: 2236
+Pre-Depends: patches-com.ps.githubweblegacycompat(= 2.3.25~roothide)
+Depends: mobilesubstrate (>= 0.9.5000), firmware (>= 8.0), firmware (<< 16.4), com.ps.polyfills (>= 2.12.3)
+Filename: debs/com.ps.githubweblegacycompat_2.3.25_iphoneos-arm64e-2.deb
+Size: 990462
+MD5sum: bbb5ae7b0953fcd3d9337368a956ddab
+SHA1: fd1a3b21765573c17a41164cb9d3786e464e4920
+SHA256: 66bbcc038fe07415e24cc6106e40ce68ff37af8cd711177830d4a3247eed4459
+Section: Tweaks
+Description: Makes GitHub website more accessible on iOS < 16.4
+Author: PoomSmart
+Depiction: https://poomsmart.github.io/repo/depictions/githubweblegacycompat.html
+Name: GitHubWebLegacyCompat
+Sileodepiction: https://poomsmart.github.io/repo/sileodepictions/githubweblegacycompat.json
+
+Package: com.sini921.simpleswitch
+Version: 0.0.1-8
+Architecture: iphoneos-arm64e
+Maintainer: 绘梨衣
+Installed-Size: 464
+Pre-Depends: rootless-compat(>= 0.9)
+Depends: mobilesubstrate
+Filename: debs/com.sini921.simpleswitch_0.0.1-8_iphoneos-arm64e.deb
+Size: 64562
+MD5sum: 5bd7dbae66669a46da77f464c1386d1d
+SHA1: 2ed4db3f14321ee150659f015e20c1cbe0a6aac5
+SHA256: 09ac23fbc8a9b0fbe2ebc4fa721320b209584f55f1a1091aa48a1d6240a77bf4
+Section: 越狱插件
+Description: 一个简约的开关
+Author: 绘梨衣
+Icon: https://sini921.github.io/repo/sileodepiction/icon/simpleswitch.png
+Name: SimpleSwitch(rootless)
+Sileodepiction: https://sini921.github.io/repo/sileodepiction/simpleswitch/js.json
+
